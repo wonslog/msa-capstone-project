@@ -1,3 +1,3 @@
-Feature : Payment
+Feature: Payment
 
 

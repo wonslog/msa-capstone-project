@@ -12,10 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
  @RestController
- @RequestMapping(value="/payments")
+ @RequestMapping(value="/deliveries")
  @Transactional
- public class PaymentController {
+ public class DeliveryController {
         @Autowired
-        PaymentRepository paymentRepository;
-
+        DeliveryRepository deliveryRepository;
  }

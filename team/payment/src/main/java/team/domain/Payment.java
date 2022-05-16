@@ -6,11 +6,13 @@ import team.PaymentApplication;
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 import java.util.List;
-import java.util.Date; 
-
+import lombok.Data;
+import java.util.Date;
 
 @Entity
 @Table(name="Payment_table")
+@Data
+
 public class Payment  {
 
     @Id
@@ -27,12 +29,6 @@ public class Payment  {
     
     
     private Double payAmount;
-    
-    
-    private Date addDate;
-    
-    
-    private Date changeDate;
 
     @PostPersist
     public void onPostPersist(){
@@ -45,55 +41,6 @@ public class Payment  {
         paymentCanceled.publishAfterCommit();
 
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getPayStatus() {
-        return payStatus;
-    }
-
-    public void setPayStatus(String payStatus) {
-        this.payStatus = payStatus;
-    }
-
-    public Double getPayAmount() {
-        return payAmount;
-    }
-
-    public void setPayAmount(Double payAmount) {
-        this.payAmount = payAmount;
-    }
-
-    public Date getAddDate() {
-        return addDate;
-    }
-
-    public void setAddDate(Date addDate) {
-        this.addDate = addDate;
-    }
-
-    public Date getChangeDate() {
-        return changeDate;
-    }
-
-    public void setChangeDate(Date changeDate) {
-        this.changeDate = changeDate;
-    }
-
 
 
     public static PaymentRepository repository(){
@@ -108,7 +55,7 @@ public class Payment  {
         /*
         LOGIC GOES HERE
         */
-        repository().save(payment);
+        // repository().save(payment);
 
 
     }

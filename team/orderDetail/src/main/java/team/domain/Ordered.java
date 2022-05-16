@@ -17,74 +17,74 @@ public class Ordered extends AbstractEvent {
     private String customerAddr;
     private String customerTel;
 
-    public Long getid() {
+    public Long getId() {
         return id;
     }
 
-    public void setid(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
-    public Long getorderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setorderId(Long orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    public Long getcustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
-    public void setcustomerId(Long customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
-    public String getproductName() {
+    public String getProductName() {
         return productName;
     }
 
-    public void setproductName(String productName) {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
-    public Float getproductPrice() {
+    public Float getProductPrice() {
         return productPrice;
     }
 
-    public void setproductPrice(Float productPrice) {
+    public void setProductPrice(Float productPrice) {
         this.productPrice = productPrice;
     }
-    public Float getorderTotalPrice() {
+    public Float getOrderTotalPrice() {
         return orderTotalPrice;
     }
 
-    public void setorderTotalPrice(Float orderTotalPrice) {
+    public void setOrderTotalPrice(Float orderTotalPrice) {
         this.orderTotalPrice = orderTotalPrice;
     }
-    public String getorderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setorderStatus(String orderStatus) {
+    public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
-    public Date getorderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setorderDate(Date orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
-    public String getcustomerAddr() {
+    public String getCustomerAddr() {
         return customerAddr;
     }
 
-    public void setcustomerAddr(String customerAddr) {
+    public void setCustomerAddr(String customerAddr) {
         this.customerAddr = customerAddr;
     }
-    public String getcustomerTel() {
+    public String getCustomerTel() {
         return customerTel;
     }
 
-    public void setcustomerTel(String customerTel) {
+    public void setCustomerTel(String customerTel) {
         this.customerTel = customerTel;
     }
 }

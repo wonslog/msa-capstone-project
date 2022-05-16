@@ -25,7 +25,7 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: payment
+          group: delivery
           destination: team
           contentType: application/json
         event-out:
@@ -39,7 +39,7 @@ logging:
 
 
 server:
-  port: 8083
+  port: 8081
 ---
 
 spring:
@@ -59,7 +59,7 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       bindings:
         event-in:
-          group: payment
+          group: delivery
           destination: team
           contentType: application/json
         event-out:

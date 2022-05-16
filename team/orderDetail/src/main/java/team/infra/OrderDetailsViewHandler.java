@@ -27,9 +27,9 @@ public class OrderDetailsViewHandler {
             // view 객체 생성
             OrderDetails orderDetails = new OrderDetails();
             // view 객체에 이벤트의 Value 를 set 함
-            orderDetails.setorderId(ordered.getcustomerId());
-            orderDetails.setorderStatus(ordered.getorderStatus());
-            orderDetails.settotalPrice(ordered.getorderTotalPrice());
+            orderDetails.setOrderId(ordered.getCustomerId());
+            orderDetails.setOrderStatus(ordered.getOrderStatus());
+            orderDetails.setTotalPrice(ordered.getOrderTotalPrice());
             // view 레파지 토리에 save
             orderDetailsRepository.save(orderDetails);
 
@@ -45,10 +45,10 @@ public class OrderDetailsViewHandler {
             if (!orderCanceled.validate()) return;
                 // view 객체 조회
 
-                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(orderCanceled.getorderId());
+                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(orderCanceled.getOrderId());
                     for(OrderDetails orderDetails : orderDetailsList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    orderDetails.setorderStatus(orderCanceled.getorderStatus());
+                    orderDetails.setOrderStatus(orderCanceled.getOrderStatus());
                 // view 레파지 토리에 save
                 orderDetailsRepository.save(orderDetails);
                 }
@@ -66,7 +66,7 @@ public class OrderDetailsViewHandler {
                     List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(paymentApproved.getOrderId());
                     for(OrderDetails orderDetails : orderDetailsList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    orderDetails.setpayStatus(paymentApproved.getPaymentStatus());
+                    orderDetails.setPayStatus(paymentApproved.getPaymentStatus());
                 // view 레파지 토리에 save
                 orderDetailsRepository.save(orderDetails);
                 }
@@ -84,7 +84,7 @@ public class OrderDetailsViewHandler {
                     List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(paymentCanceled.getOrderId());
                     for(OrderDetails orderDetails : orderDetailsList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    orderDetails.setpayStatus(paymentCanceled.getPaymentStatus());
+                    orderDetails.setPayStatus(paymentCanceled.getPaymentStatus());
                 // view 레파지 토리에 save
                 orderDetailsRepository.save(orderDetails);
                 }
@@ -99,10 +99,10 @@ public class OrderDetailsViewHandler {
             if (!deliveryStarted.validate()) return;
                 // view 객체 조회
 
-                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(deliveryStarted.getorderId());
+                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(deliveryStarted.getOrderId());
                     for(OrderDetails orderDetails : orderDetailsList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    orderDetails.setorderStatus(deliveryStarted.getorderStatus());
+                    orderDetails.setOrderStatus(deliveryStarted.getOrderStatus());
                 // view 레파지 토리에 save
                 orderDetailsRepository.save(orderDetails);
                 }
@@ -117,10 +117,10 @@ public class OrderDetailsViewHandler {
             if (!deliveryCanceled.validate()) return;
                 // view 객체 조회
 
-                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(deliveryCanceled.getorderId());
+                    List<OrderDetails> orderDetailsList = orderDetailsRepository.findByorderId(deliveryCanceled.getOrderId());
                     for(OrderDetails orderDetails : orderDetailsList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
-                    orderDetails.setorderStatus(deliveryCanceled.getorderStatus());
+                    orderDetails.setOrderStatus(deliveryCanceled.getOrderStatus());
                 // view 레파지 토리에 save
                 orderDetailsRepository.save(orderDetails);
                 }

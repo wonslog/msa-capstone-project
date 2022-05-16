@@ -17,49 +17,49 @@ public class DeliveryStarted extends AbstractEvent {
         return id;
     }
 
-    public void setid(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
-    public Long getorderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setorderId(Long orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    public String getorderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setorderStatus(String orderStatus) {
+    public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
-    public String getcustomerAddr() {
+    public String getCustomerAddr() {
         return customerAddr;
     }
 
-    public void setcustomerAddr(String customerAddr) {
+    public void setCustomerAddr(String customerAddr) {
         this.customerAddr = customerAddr;
     }
-    public String getcustomerTel() {
+    public String getCustomerTel() {
         return customerTel;
     }
 
-    public void setcustomerTel(String customerTel) {
+    public void setCustomerTel(String customerTel) {
         this.customerTel = customerTel;
     }
-    public String getcustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
-    public void setcustomerId(String customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
-    public Long getdeliveryId() {
+    public Long getDeliveryId() {
         return deliveryId;
     }
 
-    public void setdeliveryId(Long deliveryId) {
+    public void setDeliveryId(Long deliveryId) {
         this.deliveryId = deliveryId;
     }
 }

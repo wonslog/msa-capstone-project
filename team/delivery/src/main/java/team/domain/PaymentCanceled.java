@@ -2,9 +2,8 @@ package team.domain;
 
 import team.domain.*;
 import team.infra.AbstractEvent;
-import java.util.Date;
 import lombok.Data;
-
+import java.util.Date;
 @Data
 public class PaymentCanceled extends AbstractEvent {
 
@@ -13,7 +12,5 @@ public class PaymentCanceled extends AbstractEvent {
     private String payStatus;
     private Double payAmount;
 
-    public PaymentCanceled(){
-        super();
-    }
 }
+

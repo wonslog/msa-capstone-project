@@ -1,6 +1,6 @@
 package team.infra;
 
-import team.PaymentApplication;
+import team.DeliveryApplication;
 import team.config.kafka.KafkaProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,7 @@ public class AbstractEvent {
             /**
              * spring streams 방식
              */
-            KafkaProcessor processor = PaymentApplication.applicationContext.getBean(KafkaProcessor.class);
+            KafkaProcessor processor = DeliveryApplication.applicationContext.getBean(KafkaProcessor.class);
             MessageChannel outputChannel = processor.outboundTopic();
 
             outputChannel.send(MessageBuilder

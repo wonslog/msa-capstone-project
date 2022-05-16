@@ -16,7 +16,7 @@ public class OrderDetails {
         private String payStatus;
         private Double payAmount;
         private String productName;
-        private Double totalPrice;
+        private Float totalPrice;
 
 
         public Long getId() {
@@ -61,11 +61,11 @@ public class OrderDetails {
         public void setProductName(String productName) {
             this.productName = productName;
         }
-        public Double getTotalPrice() {
+        public Float getTotalPrice() {
             return totalPrice;
         }
 
-        public void setTotalPrice(Double totalPrice) {
+        public void setTotalPrice(Float totalPrice) {
             this.totalPrice = totalPrice;
         }
 

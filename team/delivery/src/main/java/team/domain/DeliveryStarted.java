@@ -2,21 +2,21 @@ package team.domain;
 
 import team.domain.*;
 import team.infra.AbstractEvent;
-import lombok.Data;
 import java.util.Date;
+import lombok.Data;
+
 @Data
-public class OrderCanceled extends AbstractEvent {
+public class DeliveryStarted extends AbstractEvent {
 
     private Long id;
     private Long orderId;
-    private Long customerId;
-    private String productName;
-    private Float productPrice;
-    private Float orderTotalPrice;
     private String orderStatus;
-    private Date orderDate;
     private String customerAddr;
     private String customerTel;
+    private String customerId;
+    private Long deliveryId;
 
+    public DeliveryStarted(){
+        super();
+    }
 }
-
