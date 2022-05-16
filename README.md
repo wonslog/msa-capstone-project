@@ -1,3 +1,6 @@
+# MSA 4팀
+4팀 화이팅
+
 # msa-capstone-project
 <img src= "https://t1.daumcdn.net/cfile/tistory/997A00365C79475E04?download">
 
