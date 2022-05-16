@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderDetail
+  labels:
+    app: orderDetail
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orderDetail
+  template:
+    metadata:
+      labels:
+        app: orderDetail
+    spec:
+      containers:
+        - name: orderDetail
+          image: username/orderDetail:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
