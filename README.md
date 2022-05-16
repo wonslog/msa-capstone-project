@@ -1,5 +1,5 @@
-# MSA 4팀
-4팀 화이팅
+# MSA 4팀 - 배달의민족 커버
+분석/설계/구현/운영 4단계를 커버하는 것을 목표로 구성해 보았습니다.
 
 # msa-capstone-project
 <img src= "https://t1.daumcdn.net/cfile/tistory/997A00365C79475E04?download">
