@@ -8,20 +8,24 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: pet
+        - id: delivery
           uri: http://localhost:8081
           predicates:
-            - Path=/pets/**, /cats/**, /dogs/** 
-        - id: store
+            - Path=/deliveries/** 
+        - id: order
+          uri: http://localhost:8082
+          predicates:
+            - Path=/orders/** 
+        - id: payment
           uri: http://localhost:8083
           predicates:
-            - Path=/cartItems/**, /customers/**, /items/**
-        - id: store-front
-          uri: http://localhost:8085
-          predicates:
-            - Path=/shop/**, /shop/js/
-        - id: pet-front
+            - Path=/payments/** 
+        - id: orderDetail
           uri: http://localhost:8084
+          predicates:
+            - Path= 
+        - id: frontend
+          uri: http://localhost:8080
           predicates:
             - Path=/**
         
