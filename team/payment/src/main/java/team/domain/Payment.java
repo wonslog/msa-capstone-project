@@ -36,18 +36,6 @@ public class Payment  {
         PaymentApproved paymentApproved = new PaymentApproved();
         BeanUtils.copyProperties(this, paymentApproved);
         paymentApproved.publishAfterCommit();
-
-    }
-
-    @PrePersist
-    private void paymentCheck(){
-        try {
-        Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-    } catch (InterruptedException e) {
-        e.printStackTrace();
-    }
-        if( "".equals(this.payStatus) || this.payStatus == null ){
-        }
     }
 
     @PreRemove
