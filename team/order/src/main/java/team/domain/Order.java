@@ -55,10 +55,10 @@ public class Order  {
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
-        //team.external.Payment payment = new team.external.Payment();
+        team.external.Payment payment = new team.external.Payment();
         // mappings goes here
-        //OrderApplication.applicationContext.getBean(team.external.PaymentService.class)
-        //    .requestPayment(payment);
+        OrderApplication.applicationContext.getBean(team.external.PaymentService.class)
+            .requestPayment(payment);
 
         /*
         OrderCanceled orderCanceled = new OrderCanceled();
