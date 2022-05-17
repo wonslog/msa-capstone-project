@@ -136,8 +136,7 @@ http delete localhost:8082/orders/1
 
 
 ### REQ/RES방식의 연동 - Feign Client
-주문요청은 결제 완료 후 처리되도록 동기식 호출한다. FeignClient를 사용하여 외부 시스템을 annotion 으로 호출한다.
-![20220516_224327_LI (3)](https://user-images.githubusercontent.com/25494054/168731668-4001f6fe-ef5d-4b4d-ba60-fb6c665d77a8.jpg)
+주문요청은 결제 완료 후 처리되도록 동기식 호출한다. FeignClient를 사용하여 외부 시스템을 annotation 으로 호출한다.
 
 - feignClient dependency 설정 : pom.xml
 ```
