@@ -60,10 +60,18 @@ public class Order  {
         //OrderApplication.applicationContext.getBean(team.external.PaymentService.class)
         //    .requestPayment(payment);
 
+        /*
         OrderCanceled orderCanceled = new OrderCanceled();
         BeanUtils.copyProperties(this, orderCanceled);
         orderCanceled.publishAfterCommit();
+        */
+    }
 
+    @PreRemove
+    public void onPreRemove(){
+        OrderCanceled orderCanceled = new OrderCanceled();
+        BeanUtils.copyProperties(this, orderCanceled);
+        orderCanceled.publishAfterCommit();
     }
 
     public Long getId() {
