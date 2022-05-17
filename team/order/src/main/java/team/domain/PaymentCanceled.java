@@ -10,8 +10,6 @@ public class PaymentCanceled extends AbstractEvent {
     private Long orderId;
     private String payStatus;
     private Double payAmount;
-    private Date addDate;
-    private Date changeDate;
 
     public Long getId() {
         return id;
@@ -41,18 +39,5 @@ public class PaymentCanceled extends AbstractEvent {
     public void setPayAmount(Double payAmount) {
         this.payAmount = payAmount;
     }
-    public Date getAddDate() {
-        return addDate;
-    }
 
-    public void setAddDate(Date addDate) {
-        this.addDate = addDate;
-    }
-    public Date getChangeDate() {
-        return changeDate;
-    }
-
-    public void setChangeDate(Date changeDate) {
-        this.changeDate = changeDate;
-    }
 }
