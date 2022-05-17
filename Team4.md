@@ -1,18 +1,18 @@
 # 4팀 배달의 민족 - MAS Capston Project
 
-- 분석설계
-- SAGA Pattern
-- CQRS Pattern
-- Correlation / Compensation(Unique Key)
-- Request / Response (Feign Client / Sync.Async)
-- Gateway
-- Deploy / Pipeline
-- Circuit Breaker
-- Autoscale(HPA)
-- Self-Healing(Liveness Probe)
-- Zero-Downtime Deploy(Readiness Probe)
-- Config Map / Persistence Volume
-- Polyglot
+- 분석설계 
+- SAGA Pattern - 진송
+- CQRS Pattern - 종성
+- Correlation / Compensation(Unique Key) - 원희
+- Request / Response (Feign Client / Sync.Async) -진송
+- Gateway - 원희
+- Deploy / Pipeline - 종성
+- Circuit Breaker - 진송
+- Autoscale(HPA) - 원희
+- Self-Healing(Liveness Probe) - 종성
+- Zero-Downtime Deploy(Readiness Probe) - 종성
+- Config Map / Persistence Volume - 원희
+- Polyglot - 진송
 
 ---
 
