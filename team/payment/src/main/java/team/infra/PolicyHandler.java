@@ -32,13 +32,6 @@ public class PolicyHandler{
                 paymentRepository.deleteAll(paymentList);
             }
         }
-
-        /*
-        OrderCanceled event = orderCanceled;
-        System.out.println("\n\n##### listener CancelPayment : " + orderCanceled.toJson() + "\n\n");
-        // Sample Logic //
-        Payment.cancelPayment(event);
-        */
     }
 
 }

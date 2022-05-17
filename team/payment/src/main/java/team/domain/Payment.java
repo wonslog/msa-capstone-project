@@ -35,11 +35,13 @@ public class Payment  {
         PaymentApproved paymentApproved = new PaymentApproved();
         BeanUtils.copyProperties(this, paymentApproved);
         paymentApproved.publishAfterCommit();
+    }
 
+    @PreRemove
+    public void onPreRemove(){
         PaymentCanceled paymentCanceled = new PaymentCanceled();
         BeanUtils.copyProperties(this, paymentCanceled);
         paymentCanceled.publishAfterCommit();
-
     }
 
 
