@@ -57,8 +57,8 @@ public class Order  {
 
         team.external.Payment payment = new team.external.Payment();
         // mappings goes here
-        OrderApplication.applicationContext.getBean(team.external.PaymentService.class)
-            .requestPayment(payment);
+        payment.setOrderId(ordered.getOrderId());
+        OrderApplication.applicationContext.getBean(team.external.PaymentService.class).requestPayment(payment);
 
         /*
         OrderCanceled orderCanceled = new OrderCanceled();
