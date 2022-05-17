@@ -134,3 +134,31 @@ http localhost:8082/orders
 주문 취소
 http delete localhost:8082/orders/1
 
+
+### REQ/RES방식의 연동 - Feign Client
+주문요청은 결제 완료 후 처리되도록 동기식 호출한다. FeignClient를 사용하여 외부 시스템을 annotion 으로 호출한다.
+![20220516_224327_LI (3)](https://user-images.githubusercontent.com/25494054/168731668-4001f6fe-ef5d-4b4d-ba60-fb6c665d77a8.jpg)
+
+- feignClient dependency 설정 : pom.xml
+```
+    <!-- feign client -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+```
+- payment 서비스 annotation 설정 : order > external > PaymentService.java
+```
+@FeignClient(name="payment", url="http://localhost:8083")
+public interface PaymentService {
+    @RequestMapping(method= RequestMethod.POST, path="/payments")
+    public void requestPayment(@RequestBody Payment payment);
+주문취소 구현
+
+}
+```
+- order 서비스에서 동기 호출하는 부분과 Application.java 는 msaez 에서 req/res 방식으로 모델링하면 자동으로 소스 exporting 된다.
+![image](https://user-images.githubusercontent.com/29937411/168734691-d7f7555c-a0f8-4ba4-9fcc-f20b3d76bcb1.png)
+
+- payment 서비스, order 서비스 모두 run 상태일 때 주문이 정상적으로 처리된다.
+![image](https://user-images.githubusercontent.com/29937411/168734842-7b887a49-7cfb-4d88-a186-8bd0f3f2ff5d.png)
