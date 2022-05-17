@@ -69,9 +69,9 @@ http localhost:8082/orders
 ```
 
 ### 서비스 설계 
---SAGA Pattern : SAGA Pattern 은 MSA 환경에서 분산 트랜잭션으로 데이터의 영속성을 유지하는 디자인 패턴으로, 트랜잭션의 주체가 DBMS가 아닌 Application에 있습니다.
+-SAGA Pattern : SAGA Pattern 은 MSA 환경에서 분산 트랜잭션으로 데이터의 영속성을 유지하는 디자인 패턴으로, 트랜잭션의 주체가 DBMS가 아닌 Application에 있습니다.
 
---서비스 시나리오
+-서비스 시나리오
 [주문-결제-배달]
 1. 고객이 메뉴를 선택하여 주문한다
 2. 고객이 결제한다
