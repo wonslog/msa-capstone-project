@@ -211,3 +211,96 @@ mvn spring-boot:run
 단일진입점임 8088 포트로 결제 정보 확인
 
 ![20220517_163356](https://user-images.githubusercontent.com/25494054/168756968-5a32e303-e54a-4e91-a5d8-2211cc65a9c3.png)
+
+### Autoscale(HPA)
+
+kubectl get svc 를 통하여 order 서비스 확인
+
+![20220517_232452](https://user-images.githubusercontent.com/25494054/168834835-bac54d7a-e0ac-40b7-b164-504c51155298.png)
+
+kubectl get pod 를 통하여 order 서비스 및 siege 상태 running 확인
+
+![20220517_232844](https://user-images.githubusercontent.com/25494054/168835789-3a9e3a93-53b3-4c7d-8b81-a5eca160aa5c.png)
+
+생성된 siege Pod 안쪽에서 정상작동 확인
+
+kubectl exec -it siege -- /bin/bash
+siege -c1 -t2S -v http://order:8080/orders
+
+![20220517_233030](https://user-images.githubusercontent.com/25494054/168836190-61a7a89a-6ce2-4b96-a94c-7ba774673bb1.png)
+
+metric server 설치 확인
+
+![20220517_233117](https://user-images.githubusercontent.com/25494054/168836449-01ddb83a-52d1-41f2-b35d-ee30f75c4e1b.png)
+
+Auto Scaler를 설정
+cpu가 20%를 넘으면 replicas를 최대 3개까지 확장
+
+```
+kubectl autoscale deployment order --cpu-percent=20 --min=1 --max=3
+```
+
+kubectl get hpa 명령어로 설정값을 확인
+
+![20220517_233634](https://user-images.githubusercontent.com/25494054/168837683-8355ee57-1553-43d7-9d09-03b89a9c51f4.png)
+
+배포파일에 CPU 요청에 대한 값을 지정
+
+team > order > kubernetes 폴더로 이동하여 deployment.yaml 파일을 수정
+resources.requests.cpu: "200m"을 추가
+
+해당 컨테이너는 처음에 생성될때 200m를 사용할 수 있다. 
+시스템 성능에 의해서 더 필요하다면 CPU가 추가로 더 할당되어 최대 1000ms 까지 할당될 수 있다.(resources.limit.cpu)
+
+![20220517_234300](https://user-images.githubusercontent.com/25494054/168839141-b2f02a34-eab6-49d0-b3c6-f68d339fe713.png)
+
+변경된 yaml 파일 쿠버네티스에 배포
+cd team/order/kubernetes
+kubectl apply -f deployment.yml
+
+![20220517_234439](https://user-images.githubusercontent.com/25494054/168839538-31d7cfaf-7ca5-4b83-bdea-947fb068cea3.png)
+
+배포 완료 후 image 와 resources의 값이 정상적으로 설정되어있는지 확인
+```
+kubectl get deploy order -o yaml
+```
+
+![20220517_234543](https://user-images.githubusercontent.com/25494054/168839807-70b587f7-db4a-4f7c-99cc-06569cec7b36.png)
+
+kubectl get po 실행하여 STATUS가 정상적으로 Running 상태 확인
+
+![20220517_234624](https://user-images.githubusercontent.com/25494054/168839957-00f6c934-248e-4ef7-a123-101279325701.png)
+
+watch kubectl get po 명령을 사용하여 pod 가 생성되는 것을 확인
+
+![20220517_234744](https://user-images.githubusercontent.com/25494054/168840289-fa1cf2a3-d648-4682-acda-b5c4077d3b92.png)
+
+kubectl get hpa 명령어로 CPU 값이 늘어난 것을 확인
+
+![20220517_234825](https://user-images.githubusercontent.com/25494054/168840409-88b422df-3311-4e20-8a72-9c40b50af4f6.png)
+
+seige 명령으로 부하를 주어서 Pod 가 늘어나도록 한다.
+
+kubectl exec -it siege -- /bin/bash
+siege -c30 -t40S -v http://order:8080/orders
+
+늘어난 CPU 값 확인
+
+![20220517_235345](https://user-images.githubusercontent.com/25494054/168841757-59098dc6-31be-434f-a810-dddc6e362446.png)
+
+늘어난 POD REPLICAS
+
+![20220517_235340](https://user-images.githubusercontent.com/25494054/168841738-e2006eb4-59ec-43e6-9067-7f7154af7f77.png)
+
+seige 부하
+
+![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
+
+
+
+
+
+
+
+
+
