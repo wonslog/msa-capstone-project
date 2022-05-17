@@ -173,3 +173,41 @@ public interface PaymentService {
 
 - payment 서비스, order 서비스 모두 run 상태일 때 주문이 정상적으로 처리된다.
 ![image](https://user-images.githubusercontent.com/29937411/168734842-7b887a49-7cfb-4d88-a186-8bd0f3f2ff5d.png)
+
+### Gateway
+게이트웨이를 사용하여 모든 API 서버들의 엔드포인트 단일화
+
+Gateway 설정 파일 수정
+
+![20220517_162835](https://user-images.githubusercontent.com/25494054/168754278-cafa6a17-c025-46b5-96d0-0b2aac0596de.png)
+
+gateway 서비스 실행
+```
+cd gateway
+mvn spring-boot:run
+```
+order 및 payment 서비스 실행
+```
+cd order
+mvn spring-boot:run
+```
+```
+cd payment
+mvn spring-boot:run
+```
+
+기존 8082 포트로 주문 생성
+
+![20220517_163200](https://user-images.githubusercontent.com/25494054/168756842-890eccfa-e2b4-49c6-a6ce-8a7a45da0c25.png)
+
+단일진입점인 8088 포트로 주문 생성
+
+![20220517_163258](https://user-images.githubusercontent.com/25494054/168756876-ba5d1b8c-4ecc-4fad-8fac-67b87c85aa94.png)
+
+기존 8083 포트로 결제 정보 확인
+
+![20220517_163337](https://user-images.githubusercontent.com/25494054/168756940-88e4c12b-0c88-4b22-b5f5-1e8b941508c2.png)
+
+단일진입점임 8088 포트로 결제 정보 확인
+
+![20220517_163356](https://user-images.githubusercontent.com/25494054/168756968-5a32e303-e54a-4e91-a5d8-2211cc65a9c3.png)
