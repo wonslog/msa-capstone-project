@@ -27,7 +27,7 @@ public class PolicyHandler{
         if(!orderCanceled.validate()) return;
 
         if(orderCanceled.validate()){
-            List<Payment> paymentList = paymentRepository.findByOrderId(orderCanceled.getId());
+            List<Payment> paymentList = paymentRepository.findByOrderId(orderCanceled.getOrderId());
             if ((paymentList != null) && !paymentList.isEmpty()){
                 paymentRepository.deleteAll(paymentList);
             }
