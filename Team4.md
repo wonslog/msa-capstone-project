@@ -224,8 +224,10 @@ kubectl get pod 를 통하여 order 서비스 및 siege 상태 running 확인
 
 생성된 siege Pod 안쪽에서 정상작동 확인
 
+```
 kubectl exec -it siege -- /bin/bash
 siege -c1 -t2S -v http://order:8080/orders
+```
 
 ![20220517_233030](https://user-images.githubusercontent.com/25494054/168836190-61a7a89a-6ce2-4b96-a94c-7ba774673bb1.png)
 
@@ -255,8 +257,10 @@ resources.requests.cpu: "200m"을 추가
 ![20220517_234300](https://user-images.githubusercontent.com/25494054/168839141-b2f02a34-eab6-49d0-b3c6-f68d339fe713.png)
 
 변경된 yaml 파일 쿠버네티스에 배포
+```
 cd team/order/kubernetes
 kubectl apply -f deployment.yml
+```
 
 ![20220517_234439](https://user-images.githubusercontent.com/25494054/168839538-31d7cfaf-7ca5-4b83-bdea-947fb068cea3.png)
 
@@ -280,9 +284,10 @@ kubectl get hpa 명령어로 CPU 값이 늘어난 것을 확인
 ![20220517_234825](https://user-images.githubusercontent.com/25494054/168840409-88b422df-3311-4e20-8a72-9c40b50af4f6.png)
 
 seige 명령으로 부하를 주어서 Pod 가 늘어나도록 한다.
-
+```
 kubectl exec -it siege -- /bin/bash
 siege -c30 -t40S -v http://order:8080/orders
+```
 
 늘어난 CPU 값 확인
 
@@ -295,12 +300,5 @@ siege -c30 -t40S -v http://order:8080/orders
 seige 부하
 
 ![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
-
-
-
-
-
-
-
 
 
