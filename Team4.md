@@ -77,7 +77,7 @@ http localhost:8082/orders/1
 
 ### Correlation / Compensation(Unique Key)
 마이크로 서비스간의 통신에서 이벤트 메세지를 Pub/Sub 하는 방법을 통해 Compensation(보상) and Correlation(상호 연관)을 테스트
-Order 서비스에서 주문취소 이벤트를 발행하였을때 Payment 서비스에서 주문취소 이벤트를 수신하여 작업 후 결제정보를 삭제하면서 배달 취소 이벤트 발생
+Order 서비스에서 주문취소 이벤트를 발행하였을때 Payment 서비스에서 주문취소 이벤트를 수신하여 작업 후 결제정보를 삭제하면서 결제 취소 이벤트 발행
 
 ![20220516_224327_LI (3)](https://user-images.githubusercontent.com/25494054/168731668-4001f6fe-ef5d-4b4d-ba60-fb6c665d77a8.jpg)
 
@@ -111,21 +111,41 @@ Payment.java(결제 취소 이벤트 발행)
 docker ps
 docker exec -it 829780fac0ce /bin/bash
 kafka-console-consumer --bootstrap-server localhost:29092 --topic team --from-beginning
-* 포트 찾는 방법
-* topic 명
+* 포트 찾는 방법 : kafka - docker-compose.xml - kafka ports
+* topic 명 : team - 해당 서비스 - src - main - resource - application.yml - bindings destination
 
 주문 없음
 http localhost:8082/orders
 
-주문 발생
-http localhost:8082/orders orderId="1" productName="Pasta"
+![20220517_161801](https://user-images.githubusercontent.com/25494054/168753220-ba59b169-6c64-4722-b398-d4bbf96508cb.png)
 
-주문 확인
-http localhost:8082/orders
+주문 발생
+http localhost:8082/orders orderId="30" productName="APPLE"
+
+![20220517_161845](https://user-images.githubusercontent.com/25494054/168753330-d6f40837-8714-4c3d-98ed-0e30855359bb.png)
+
+결제 정보 생성 확인
+http localhost:8083/payments
+
+![20220517_161937](https://user-images.githubusercontent.com/25494054/168753374-9effb1e4-b7ca-4382-acdf-aeb19c5e4e93.png)
+
+이벤트 확인
+
+![20220517_162028](https://user-images.githubusercontent.com/25494054/168753474-7422345e-de57-460a-9705-d05825c5160b.png)
 
 주문 취소
-http delete localhost:8082/orders/1
+http delete localhost:8082/orders/13
 
+![20220517_162113](https://user-images.githubusercontent.com/25494054/168753516-4e23343d-adf6-47f0-a434-5afb92d26688.png)
+
+이벤트 확인
+
+![20220517_162158](https://user-images.githubusercontent.com/25494054/168753564-a0137f20-7b2e-4071-95be-8b96611303c8.png)
+
+결제 정보 삭제 확인
+http localhost:8083/payments
+
+![20220517_162237](https://user-images.githubusercontent.com/25494054/168753603-a3579ccb-7546-4914-86b3-86cf85490e36.png)
 
 ### REQ/RES방식의 연동 - Feign Client
 주문요청은 결제 완료 후 처리되도록 동기식 호출한다. FeignClient를 사용하여 외부 시스템을 annotation 으로 호출한다.
