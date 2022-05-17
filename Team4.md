@@ -117,19 +117,11 @@ kafka-console-consumer --bootstrap-server localhost:29092 --topic team --from-be
 주문 없음
 http localhost:8082/orders
 
-![20220517_135759](https://user-images.githubusercontent.com/25494054/168732748-84f267fa-6be3-48c2-8a47-d054771fd969.png)
-
 주문 발생
 http localhost:8082/orders orderId="1" productName="Pasta"
 
-![20220517_135915](https://user-images.githubusercontent.com/25494054/168732746-7202c99e-7487-471f-ab02-2d6b4e5c9ea0.png)
-
 주문 확인
 http localhost:8082/orders
-
-![20220517_135946](https://user-images.githubusercontent.com/25494054/168732744-649e8180-268e-43d0-b608-e824b7d11b77.png)
-
-![20220517_140032](https://user-images.githubusercontent.com/25494054/168732742-8ee98a0d-6685-4ea3-9932-01422f02fd67.png)
 
 주문 취소
 http delete localhost:8082/orders/1
