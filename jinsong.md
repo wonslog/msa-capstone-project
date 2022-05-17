@@ -75,8 +75,10 @@ public class PaymentServiceImpl implements PaymentService{
 ```
 
 - 테스트결과
-
+정상처리
 ![image](https://user-images.githubusercontent.com/29937411/168758952-b20adf09-5472-4272-8458-8dda8c39d561.png)
+
+결제지연처리 메세지 확인
 ![image](https://user-images.githubusercontent.com/29937411/168759002-f920e770-5cd4-4ad5-99de-2ca4502ee9e6.png)
 
 
