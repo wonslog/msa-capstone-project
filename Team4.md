@@ -606,7 +606,7 @@ kubectl apply -f deployment.yml
 
 # Config Map / Persistence Volume / Persistence Volume Claim
 
-컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
+컨테이너를 관리하는 구성정보를 하나로 모아서 KEY VALUE 형태로 관리할 수 있는 API - ConfigMap
 
 ConfigMap 생성
 
