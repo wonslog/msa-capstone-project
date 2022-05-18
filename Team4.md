@@ -75,6 +75,37 @@ http localhost:8082/orders orderId=1 productName="TV"
 http localhost:8082/orders/1
 ```
 
+
+
+# CQRS
+
+주문 발생(취소), 결제(취소), 배달(취소) 이벤트 발생 시 주문, 결제 상태값 주문금액(금액확인)을 고객이 조회할 수 있도록 CQRS로 구현하였습니다.
+- 비동기식으로 처리되어 이벤트 기반의 Kafka를 통해 처리되어 별도 Table에 관리한다.
+- order, payment, delivery Aggregate의 '마이페이지' 형식과 같이 통합 조회가 가능하다.
+- Modeling
+
+![orderDetail_modeling](https://user-images.githubusercontent.com/11211944/168709433-11239a86-4a5b-4540-a3f1-e5a7a7bbb3f1.PNG)
+
+- ViewHandler를 통해 구현(ordered 이벤트 발생 시)
+![create](https://user-images.githubusercontent.com/11211944/168712299-b1cdbb33-561f-41d2-b31f-c140879b0fce.PNG)
+
+- OrderCanceled 이벤트 발생 시, orderStatus 상태 값 변경
+![update1](https://user-images.githubusercontent.com/11211944/168711242-b665664d-afec-474d-808b-2d6dc9cd5513.PNG)
+
+- PaymentApproved 이벤트 발생 시, paymentStatus 상태 값 변경
+![update2](https://user-images.githubusercontent.com/11211944/168711247-04cd6218-0a4f-48b3-8503-334d82e5b4e6.PNG)
+
+- PaymentCanceled 이벤트 발생 시, paymentStatus 상태 값 변경
+![update3](https://user-images.githubusercontent.com/11211944/168711252-0028b8d4-7a4f-4d31-bec9-4dd93ea2761c.PNG)
+
+- DeliveryStarted 이벤트 발생 시, orderStatus 상태 값 변경
+![update4](https://user-images.githubusercontent.com/11211944/168711258-96ed0aab-291b-4671-bb5a-627f8aec144c.PNG)
+
+- DeliveryCanceled 이벤트 발생 시, orderStatus 상태 값 변경
+![update5](https://user-images.githubusercontent.com/11211944/168711224-288a0300-9344-4215-ae2f-70119cf47d0d.PNG)
+
+
+
 ### Correlation / Compensation(Unique Key)
 마이크로 서비스간의 통신에서 이벤트 메세지를 Pub/Sub 하는 방법을 통해 Compensation(보상) and Correlation(상호 연관)을 테스트
 Order 서비스에서 주문취소 이벤트를 발행하였을때 Payment 서비스에서 주문취소 이벤트를 수신하여 작업 후 결제정보를 삭제하면서 결제 취소 이벤트 발행
@@ -174,6 +205,8 @@ public interface PaymentService {
 - payment 서비스, order 서비스 모두 run 상태일 때 주문이 정상적으로 처리된다.
 ![image](https://user-images.githubusercontent.com/29937411/168734842-7b887a49-7cfb-4d88-a186-8bd0f3f2ff5d.png)
 
+
+
 ### Gateway
 게이트웨이를 사용하여 모든 API 서버들의 엔드포인트 단일화
 
@@ -211,6 +244,153 @@ mvn spring-boot:run
 단일진입점임 8088 포트로 결제 정보 확인
 
 ![20220517_163356](https://user-images.githubusercontent.com/25494054/168756968-5a32e303-e54a-4e91-a5d8-2211cc65a9c3.png)
+
+
+# CI/CD
+- AWS 설정
+```
+aws configure
+
+AWS Access Key ID: [AWS 액세스 키]
+AWS Secret Access Key: [시크릿 키]
+Default region name : [본인의 리젼]
+Default output format : json
+
+클러스터 이름 확인
+eksctl get clusters
+클러스터에 접속하기 위한 설정 다운로드
+aws eks --region ca-central-1 update-kubeconfig --name [Cluster Name]
+접속이 정상적으로 되었다면
+kubectl get nodes
+
+ECR docker 명령을 로그인 시키기 위한 설정
+password 확인
+aws --region ca-central-1 ecr get-login-password
+docker login --username AWS -p 위에서나온긴패스워드 [AWS유저아이디-숫자로만된].dkr.ecr.ca-central-1.amazonaws.com
+
+```
+
+- 도커 컨테이너, 이미지 확인
+```
+도커 컨테이너 확인
+docker container ls
+도커 이미지 확인
+docker image ls
+```
+
+- 도커 이미지를 빌드하고, push 한다.
+```
+docker login (docker hub 계정생성이 되어 있어야 함.)
+docker build -t ljsjjong/gateway:v1 .
+docker build -t ljsjjong/order:v1 .    
+docker build -t ljsjjong/payment:v1 .
+docker build -t ljsjjong/delivery:v1 .
+
+docker images
+docker push ljsjjong/gateway:v1
+docker push ljsjjong/order:v1
+docker push ljsjjong/payment:v1
+docker push ljsjjong/delivery:v1
+
+deployment.yml 파일에는 도커 이미지 부분이 변경되어 있어야 한다.
+kubectl apply -f kubernetes/deployment.yml
+kubectl apply -f kubernetes/service.yml
+```
+
+- 클러스터 확인
+![kubectl_get_svc](https://user-images.githubusercontent.com/11211944/168744492-b8462bc0-28e1-484d-ac83-5ace0f6572ef.PNG)
+
+- 위 이미지에서 Gateway External IP로 접근
+![gateway_call](https://user-images.githubusercontent.com/11211944/168744875-0da44705-eb65-4cc8-80ab-495611946803.PNG)
+
+- 주문정보 확인
+![aws_orders_get](https://user-images.githubusercontent.com/11211944/168746369-28adfe21-abc3-4eb2-ac33-c96b6e4e02a0.PNG)
+
+
+### 서킷브레이커를 사용한 테스트 및 장애차단코드 작성
+
+REQ/RES 방식에서 서킷브레이커를 통하여 장애 전파를 원천 차단
+- 주문서비스 확인
+```
+http localhost:8082/orders orderId=1 productName=TV
+```
+
+
+- 서킷브레이커 설정 : order > application.yml
+```
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    # 전역설정
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 610
+```      
+
+- payment 서비스에서 요청처리 지연 코드 작성
+```
+    @PostPersist
+    public void onPostPersist(){
+
+        PaymentApproved paymentApproved = new PaymentApproved();
+        BeanUtils.copyProperties(this, paymentApproved);
+        paymentApproved.publishAfterCommit();
+
+        try {
+            Thread.currentThread().sleep((long) (1000 + Math.random() * 220));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+```
+
+- 부하 툴을 사용하여 주문을 넣어본다.
+```
+siege -c2 -t10S  -v --content-type "application/json" 'http://localhost:8082/orders POST {"orderId":4}'
+```
+
+- 결과
+![image](https://user-images.githubusercontent.com/29937411/168758407-03924bfd-49c8-4c14-8456-0bd204d65b67.png)
+
+- 장애차단 코드 작성
+fallback 함수 설정. 
+```
+@FeignClient(name="payment", url="http://localhost:8083", fallback = PaymentServiceImpl.class)
+public interface PaymentService {
+    @RequestMapping(method= RequestMethod.POST, path="/payments")
+    public void requestPayment(@RequestBody Payment payment);
+
+}
+```
+
+paymentServiceImpl.java
+```
+@Service
+public class PaymentServiceImpl implements PaymentService{
+
+    /**
+     * 결제 fallback
+     */
+    public void requestPayment(Payment payment) {
+        System.out.println("@@@@@@@ 결제가 지연중 입니다. @@@@@@@@@@@@");
+        System.out.println("@@@@@@@ 결제가 지연중 입니다. @@@@@@@@@@@@");
+        System.out.println("@@@@@@@ 결제가 지연중 입니다. @@@@@@@@@@@@");
+    }
+
+}
+```
+
+- 테스트결과
+정상처리
+![image](https://user-images.githubusercontent.com/29937411/168758952-b20adf09-5472-4272-8458-8dda8c39d561.png)
+
+결제지연처리 메세지 확인
+![image](https://user-images.githubusercontent.com/29937411/168759002-f920e770-5cd4-4ad5-99de-2ca4502ee9e6.png)
+
+
 
 ### Autoscale(HPA)
 
@@ -301,76 +481,83 @@ seige 부하
 
 ![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
 
-### Config Map
 
-컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
-
-ConfigMap 생성
-
+# self-healing
+- Pod의 상태가 비정상인 경우 kubelet을 통해 pod들이 재시작된다.
+![pod_selfhealing](https://user-images.githubusercontent.com/11211944/168748704-1c02d205-326a-4c3a-8111-a6389eded4c2.PNG)
 ```
-kubectl create configmap mysqlinfo --from-literal password=password
-```
+gitpod /workspace/msa-capstone-project/team/payment (main) $ kubectl get po -w
+NAME                        READY   STATUS    RESTARTS   AGE
+delivery-55994c79f9-4p6c5   0/1     Running   1          4m43s
+delivery-8646fcfbcb-d4lk2   0/1     Running   1          4m43s
+gateway-5669c77854-c9x5m    1/1     Running   0          4m43s
+order-6f86b56898-fwqth      0/1     Running   1          4m43s
+order-b8cbfbc79-bgpsm       0/1     Running   1          4m43s
+payment-6557776984-g66xm    0/1     Running   1          4m42s
+payment-854c56cc8b-bjjm9    0/1     Running   1          4m42s
+delivery-55994c79f9-4p6c5   0/1     Running   2          4m45s
+order-6f86b56898-fwqth      0/1     Running   2          4m50s
+order-b8cbfbc79-bgpsm       0/1     Running   2          4m50s
+delivery-8646fcfbcb-d4lk2   0/1     Running   2          4m51s
+payment-6557776984-g66xm    0/1     Running   2          4m51s
+payment-854c56cc8b-bjjm9    0/1     Running   2          4m52s
+delivery-55994c79f9-4p6c5   0/1     Terminating   2          5m47s
+delivery-55994c79f9-zzxdt   0/1     Pending       0          0s
+delivery-55994c79f9-zzxdt   0/1     Pending       0          0s
+delivery-55994c79f9-zzxdt   0/1     ContainerCreating   0          0s
+delivery-8646fcfbcb-d4lk2   0/1     Terminating         2          5m48s
+delivery-8646fcfbcb-56r5j   0/1     Pending             0          0s
+delivery-8646fcfbcb-56r5j   0/1     Pending             0          0s
+delivery-8646fcfbcb-56r5j   0/1     ContainerCreating   0          0s
+gateway-5669c77854-c9x5m    1/1     Terminating         0          5m48s
+gateway-5669c77854-vhsn2    0/1     Pending             0          0s
+gateway-5669c77854-vhsn2    0/1     Pending             0          0s
+gateway-5669c77854-vhsn2    0/1     ContainerCreating   0          0s
+order-6f86b56898-fwqth      0/1     Terminating         2          5m48s
+order-6f86b56898-xg5lw      0/1     Pending             0          0s
+order-6f86b56898-xg5lw      0/1     Pending             0          0s
+order-6f86b56898-xg5lw      0/1     ContainerCreating   0          0s
+order-b8cbfbc79-bgpsm       0/1     Terminating         2          5m48s
+order-b8cbfbc79-hb9s8       0/1     Pending             0          0s
+order-b8cbfbc79-hb9s8       0/1     Pending             0          0s
+order-b8cbfbc79-hb9s8       0/1     ContainerCreating   0          0s
+payment-6557776984-g66xm    0/1     Terminating         2          5m47s
+payment-6557776984-tn85g    0/1     Pending             0          0s
+payment-6557776984-tn85g    0/1     Pending             0          0s
+payment-6557776984-tn85g    0/1     ContainerCreating   0          1s
+delivery-8646fcfbcb-d4lk2   0/1     Terminating         2          5m49s
+payment-854c56cc8b-bjjm9    0/1     Terminating         2          5m48s
+payment-854c56cc8b-m2vjp    0/1     Pending             0          0s
+payment-854c56cc8b-m2vjp    0/1     Pending             0          0s
+delivery-55994c79f9-4p6c5   0/1     Terminating         2          5m49s
+payment-854c56cc8b-m2vjp    0/1     ContainerCreating   0          0s
+order-6f86b56898-fwqth      0/1     Terminating         2          5m49s
+gateway-5669c77854-c9x5m    0/1     Terminating         0          5m49s
+delivery-8646fcfbcb-d4lk2   0/1     Terminating         2          5m50s
+delivery-8646fcfbcb-d4lk2   0/1     Terminating         2          5m50s
+payment-854c56cc8b-bjjm9    0/1     Terminating         2          5m49s
+delivery-8646fcfbcb-56r5j   0/1     Running             0          2s
+delivery-55994c79f9-zzxdt   0/1     Running             0          3s
+payment-6557776984-g66xm    0/1     Terminating         2          5m49s
+order-6f86b56898-xg5lw      0/1     Running             0          2s
+order-b8cbfbc79-bgpsm       0/1     Terminating         2          5m50s
+gateway-5669c77854-vhsn2    1/1     Running             0          2s
+order-b8cbfbc79-hb9s8       0/1     Running             0          3s
+payment-6557776984-tn85g    0/1     Running             0          3s
+payment-854c56cc8b-m2vjp    0/1     Running             0          2s
+payment-6557776984-g66xm    0/1     Terminating         2          5m52s
+payment-6557776984-g66xm    0/1     Terminating         2          5m52s
+payment-854c56cc8b-bjjm9    0/1     Terminating         2          5m52s
+payment-854c56cc8b-bjjm9    0/1     Terminating         2          5m52s
+gateway-5669c77854-c9x5m    0/1     Terminating         0          6m
+gateway-5669c77854-c9x5m    0/1     Terminating         0          6m
+delivery-55994c79f9-4p6c5   0/1     Terminating         2          6m
+delivery-55994c79f9-4p6c5   0/1     Terminating         2          6m
+order-6f86b56898-fwqth      0/1     Terminating         2          6m
+order-6f86b56898-fwqth      0/1     Terminating         2          6m
+order-b8cbfbc79-bgpsm       0/1     Terminating         2          6m
+order-b8cbfbc79-bgpsm       0/1     Terminating         2          6m
 
-또는 yaml 파일로 생성
-
-```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysqlinfo
-data:
-  password: password
-```
-
-ConfigMap 사용하기
-환경변수 password 값은 mysqlinfo ConfigMap의 password라는 key의 value를 가져와라
-
-![20220518_132522](https://user-images.githubusercontent.com/25494054/168956980-be2f396d-4294-44c1-8f5c-e49b2697be39.png)
-
-### Persistence Volume / Persistence Volume Claim
-
-PV 및 PVC 기능을 통한 mySQL 연동
-
-PV 및 PVC 생성(pv.yml)
-
-볼륨의 크기는 20g이며 하나의 Pod에 의해서만 마운트될 수 있음
-
-![20220518_141016](https://user-images.githubusercontent.com/25494054/168961626-b2461a62-4946-4816-87eb-8639c45f87dd.png)
-
-생성된 PVC를 POD에 적용(deployment.yml
-mysql-pv-claim라는 PVC 사용
-
-![20220518_141253](https://user-images.githubusercontent.com/25494054/168961907-b35cffdd-099e-465a-a4c4-8db9e0b3b67f.png)
-
-생성된 PV 및 PVC 확인
-
-![20220518_141545](https://user-images.githubusercontent.com/25494054/168962334-d5e40200-e353-4571-ac1c-e0d00a467cd9.png)
-
-생성된 PV 및 PVC를 통한 mySQL 연동
-
-```
-cd team/mysql/kubernetes/
-kubectl apply -f pv.yml
-kubectl apply -f configmap.yml
-kubectl apply -f deployment.yml
-```
-
-mySQL Client 접속하기
-최초 접속 시
-```
-kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
-```
-
-![20220518_141753](https://user-images.githubusercontent.com/25494054/168962594-b4db9d1a-6d34-44a7-abcd-92de1a4c330e.png)
-
-
-pod 생성 후 접속 시(또는 위 mysql-client POD 삭제 후 다시 생성하여 접속)
-```
-kubectl get po로 위에서 생성한 mySQL POD 명 확인
-kubectl exec mysql-client -it /bin/bash
-mysql -h mysql -ppassword 하면 mySQL 접속 완료
-show databases; 실행 가능
-```
 
 # Zero-Downtime Deploy(Readiness Probe) 무중단 배포
 
@@ -449,4 +636,76 @@ kubectl apply -f deployment.yml
 - siege 로그를 보면서 무정지 배포가 되었음을 확인
 
 ![apply_deployment_add](https://user-images.githubusercontent.com/11211944/168954032-11496d44-b99a-4b62-9557-c1b88fc09b08.PNG)
+
+
+### Config Map
+
+컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
+
+ConfigMap 생성
+
+```
+kubectl create configmap mysqlinfo --from-literal password=password
+```
+
+또는 yaml 파일로 생성
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysqlinfo
+data:
+  password: password
+```
+
+ConfigMap 사용하기
+환경변수 password 값은 mysqlinfo ConfigMap의 password라는 key의 value를 가져와라
+
+![20220518_132522](https://user-images.githubusercontent.com/25494054/168956980-be2f396d-4294-44c1-8f5c-e49b2697be39.png)
+
+### Persistence Volume / Persistence Volume Claim
+
+PV 및 PVC 기능을 통한 mySQL 연동
+
+PV 및 PVC 생성(pv.yml)
+
+볼륨의 크기는 20g이며 하나의 Pod에 의해서만 마운트될 수 있음
+
+![20220518_141016](https://user-images.githubusercontent.com/25494054/168961626-b2461a62-4946-4816-87eb-8639c45f87dd.png)
+
+생성된 PVC를 POD에 적용(deployment.yml
+mysql-pv-claim라는 PVC 사용
+
+![20220518_141253](https://user-images.githubusercontent.com/25494054/168961907-b35cffdd-099e-465a-a4c4-8db9e0b3b67f.png)
+
+생성된 PV 및 PVC 확인
+
+![20220518_141545](https://user-images.githubusercontent.com/25494054/168962334-d5e40200-e353-4571-ac1c-e0d00a467cd9.png)
+
+생성된 PV 및 PVC를 통한 mySQL 연동
+
+```
+cd team/mysql/kubernetes/
+kubectl apply -f pv.yml
+kubectl apply -f configmap.yml
+kubectl apply -f deployment.yml
+```
+
+mySQL Client 접속하기
+최초 접속 시
+```
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+```
+
+![20220518_141753](https://user-images.githubusercontent.com/25494054/168962594-b4db9d1a-6d34-44a7-abcd-92de1a4c330e.png)
+
+
+pod 생성 후 접속 시(또는 위 mysql-client POD 삭제 후 다시 생성하여 접속)
+```
+kubectl get po로 위에서 생성한 mySQL POD 명 확인
+kubectl exec mysql-client -it /bin/bash
+mysql -h mysql -ppassword 하면 mySQL 접속 완료
+show databases; 실행 가능
+```
 
