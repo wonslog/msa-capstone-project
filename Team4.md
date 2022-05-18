@@ -411,11 +411,11 @@ siege -c1 -t2S -v http://order:8080/orders
 
 ![20220517_233030](https://user-images.githubusercontent.com/25494054/168836190-61a7a89a-6ce2-4b96-a94c-7ba774673bb1.png)
 
-metric server 설치 확인
+metric server 설치 확인(리소스 사용량 확인)
 
 ![20220517_233117](https://user-images.githubusercontent.com/25494054/168836449-01ddb83a-52d1-41f2-b35d-ee30f75c4e1b.png)
 
-Auto Scaler를 설정
+Auto Scaler 설정
 cpu가 20%를 넘으면 replicas를 최대 3개까지 확장
 
 ```
@@ -426,17 +426,18 @@ kubectl get hpa 명령어로 설정값을 확인
 
 ![20220517_233634](https://user-images.githubusercontent.com/25494054/168837683-8355ee57-1553-43d7-9d09-03b89a9c51f4.png)
 
-배포파일에 CPU 요청에 대한 값을 지정
+컨테이너에 적용될 리소스의 양을 정의
 
 team > order > kubernetes 폴더로 이동하여 deployment.yaml 파일을 수정
 resources.requests.cpu: "200m"을 추가
 
-해당 컨테이너는 처음에 생성될때 200m를 사용할 수 있다. 
-시스템 성능에 의해서 더 필요하다면 CPU가 추가로 더 할당되어 최대 m까지 할당될 수 있다.(resources.limit.cpu)
+request는 컨테이너가 생성될때 요청하는 리소스 양이고, 
+
+limit은 컨테이너가 생성된 후에 실행되다가 리소스가 더 필요한 경우 (CPU가 메모리가 더 필요한 경우) 추가로 더 사용할 수 있는 부분이다.
 
 ![20220517_234300](https://user-images.githubusercontent.com/25494054/168839141-b2f02a34-eab6-49d0-b3c6-f68d339fe713.png)
 
-변경된 yaml 파일 쿠버네티스에 배포
+변경된 yml 파일 쿠버네티스에 배포
 ```
 cd team/order/kubernetes
 kubectl apply -f deployment.yml
