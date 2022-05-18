@@ -12,7 +12,7 @@
 - Self-Healing(Liveness Probe) - 종성
 - Zero-Downtime Deploy(Readiness Probe) - 종성
 - Config Map / Persistence Volume - 원희
-- Polyglot - 진송
+- Polyglot - 미구현
 
 ---
 
