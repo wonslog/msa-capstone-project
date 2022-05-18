@@ -557,84 +557,48 @@ order-6f86b56898-fwqth      0/1     Terminating         2          6m
 order-6f86b56898-fwqth      0/1     Terminating         2          6m
 order-b8cbfbc79-bgpsm       0/1     Terminating         2          6m
 order-b8cbfbc79-bgpsm       0/1     Terminating         2          6m
-
+```
 
 # Zero-Downtime Deploy(Readiness Probe) 무중단 배포
 
 - 배포되는 상황을 보기 위해 siege pod를 추가한다.
 
 ```
-
 kubectl apply -f - <<EOF
-
 apiVersion: v1
-
 kind: Pod
-
 metadata:
-
   name: siege
-
 spec:
-
   containers:
-
   - name: siege
-
     image: apexacme/siege-nginx
-
 EOF
-
 ```
-
 - siege 명령어, 딜레이 명령어
-
 ```
-
 kubectl exec -it siege -- /bin/bash
-
 (딜레이X) siege -c1 -t2S -v http://a8936b8dc8de349a8a1d4de076f796e2-1549089319.ca-central-1.elb.amazonaws.com:8080/orders
-
 (딜레이O) siege -c1 -t20S -v http://a8936b8dc8de349a8a1d4de076f796e2-1549089319.ca-central-1.elb.amazonaws.com:8080/orders --delay=1S
-
 ```
-
 - readinessProbe 없는 상태로 deployment.yml 파일 저장
-
 ![readinessProbe_not](https://user-images.githubusercontent.com/11211944/168954040-9a1474d0-029a-45ca-bf1c-4985c2235cb1.PNG)
-
 ```
-
 siege 테스트 딜레이 걸어 놓은 후,
-
 kubectl apply -f deployment.yml
-
 배포 시작
-
 ```
-
 - siege 로그를 보면서 정지된 부분을 확인
-
 ![apply_deployment_not](https://user-images.githubusercontent.com/11211944/168954035-7d245b6a-f718-441d-8568-69bd81441f27.PNG)
-
 ---
-
 - readinessProbe 추가 후, deployment.yml 파일 저장
-
 ![readinessProbe_add](https://user-images.githubusercontent.com/11211944/168954036-8bf16218-41fc-46f9-bef6-da3b78aa0133.PNG)
-
 ```
-
 siege 테스트 딜레이 걸어 놓은 후,
-
 kubectl apply -f deployment.yml
-
 배포 시작
-
 ```
-
 - siege 로그를 보면서 무정지 배포가 되었음을 확인
-
 ![apply_deployment_add](https://user-images.githubusercontent.com/11211944/168954032-11496d44-b99a-4b62-9557-c1b88fc09b08.PNG)
 
 
