@@ -301,7 +301,7 @@ seige 부하
 
 ![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
 
-### Config Map / Persistence Volume
+### Config Map
 
 컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
 
@@ -327,11 +327,25 @@ ConfigMap 사용하기
 
 ![20220518_132522](https://user-images.githubusercontent.com/25494054/168956980-be2f396d-4294-44c1-8f5c-e49b2697be39.png)
 
-Persistence Volume / Persistence Volume Claim
+### Persistence Volume / Persistence Volume Claim
 
-PV 및 PVC 생성하기
+PV 및 PVC 기능을 통한 mySQL 연동
 
-mySQL Pod 생성 하기
+PV 및 PVC 생성(pv.yml)
+
+볼륨의 크기는 20g이며 하나의 Pod에 의해서만 마운트될 수 있음
+![20220518_141016](https://user-images.githubusercontent.com/25494054/168961626-b2461a62-4946-4816-87eb-8639c45f87dd.png)
+
+생성된 PVC를 POD에 적용(deployment.yml
+mysql-pv-claim라는 PVC 사용
+
+![20220518_141253](https://user-images.githubusercontent.com/25494054/168961907-b35cffdd-099e-465a-a4c4-8db9e0b3b67f.png)
+
+생성된 PV 및 PVC 확인
+
+![20220518_141545](https://user-images.githubusercontent.com/25494054/168962334-d5e40200-e353-4571-ac1c-e0d00a467cd9.png)
+
+생성된 PV 및 PVC를 통한 mySQL 연동
 
 ```
 cd team/mysql/kubernetes/
@@ -346,7 +360,10 @@ mySQL Client 접속하기
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
 ```
 
-pod 생성 후 접속 시(또는 위 mysql-client POD 삭제 후 다시 생성)
+![20220518_141753](https://user-images.githubusercontent.com/25494054/168962594-b4db9d1a-6d34-44a7-abcd-92de1a4c330e.png)
+
+
+pod 생성 후 접속 시(또는 위 mysql-client POD 삭제 후 다시 생성하여 접속)
 ```
 kubectl get po로 위에서 생성한 mySQL POD 명 확인
 kubectl exec mysql-client -it /bin/bash
