@@ -301,4 +301,32 @@ seige 부하
 
 ![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
 
+### Config Map / Persistence Volume
 
+컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
+
+ConfigMap 생성
+
+```
+kubectl create configmap mysqlinfo --from-literal password=password
+```
+
+또는 yaml 파일로 생성
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysqlinfo
+data:
+  password: password
+```
+
+ConfigMap 사용하기
+환경변수 password 값은 mysqlinfo ConfigMap의 password라는 key의 value를 가져와라
+
+![20220518_132522](https://user-images.githubusercontent.com/25494054/168956980-be2f396d-4294-44c1-8f5c-e49b2697be39.png)
+
+Persistence Volume / Persistence Volume Claim
+
+PV 및 PVC 생성하기
