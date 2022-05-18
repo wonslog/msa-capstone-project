@@ -468,6 +468,9 @@ seige 명령으로 부하를 주어서 Pod 가 늘어나도록 한다.
 kubectl exec -it siege -- /bin/bash
 siege -c30 -t40S -v http://order:8080/orders
 ```
+seige 부하
+
+![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
 
 늘어난 CPU 값 확인
 
@@ -477,9 +480,7 @@ siege -c30 -t40S -v http://order:8080/orders
 
 ![20220517_235340](https://user-images.githubusercontent.com/25494054/168841738-e2006eb4-59ec-43e6-9067-7f7154af7f77.png)
 
-seige 부하
 
-![20220517_235351](https://user-images.githubusercontent.com/25494054/168841779-eb122a5b-a636-4dbc-beaf-7d9d9217c8e0.png)
 
 
 # self-healing
