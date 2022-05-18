@@ -332,17 +332,24 @@ Persistence Volume / Persistence Volume Claim
 PV 및 PVC 생성하기
 
 mySQL Pod 생성 하기
+
+```
 cd team/mysql/kubernetes/
 kubectl apply -f pv.yml
 kubectl apply -f configmap.yml
 kubectl apply -f deployment.yml
+```
 
 mySQL Client 접속하기
 최초 접속 시
+```
 kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword
+```
 
 pod 생성 후 접속 시(또는 위 mysql-client POD 삭제 후 다시 생성)
+```
 kubectl get po로 위에서 생성한 mySQL POD 명 확인
 kubectl exec mysql-client -it /bin/bash
 mysql -h mysql -ppassword 하면 mySQL 접속 완료
 show databases; 실행 가능
+```
