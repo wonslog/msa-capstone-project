@@ -334,6 +334,7 @@ PV 및 PVC 기능을 통한 mySQL 연동
 PV 및 PVC 생성(pv.yml)
 
 볼륨의 크기는 20g이며 하나의 Pod에 의해서만 마운트될 수 있음
+
 ![20220518_141016](https://user-images.githubusercontent.com/25494054/168961626-b2461a62-4946-4816-87eb-8639c45f87dd.png)
 
 생성된 PVC를 POD에 적용(deployment.yml
