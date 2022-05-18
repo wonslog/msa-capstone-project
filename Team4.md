@@ -1,4 +1,4 @@
-# 4팀 배달의 민족 - MAS Capston Project
+# 4팀 배달의 민족 - MSA Capston Project
 
 - 분석설계 
 - SAGA Pattern - 진송
