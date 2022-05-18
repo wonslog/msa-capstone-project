@@ -16,7 +16,7 @@
 
 ---
 
-### 분석설계
+# 분석설계
 - 기능 구현에 집중하기 위해 모델 최소화
 - 주문 상세보기를 통해 CQRS 구현
 
@@ -65,8 +65,11 @@ mvn spring-boot:run
 ```
 
 order : 8082
+
 payment : 8083
+
 delivery : 8081
+
 orderDetail : 8084
 
 ```
@@ -74,7 +77,6 @@ http localhost:8082/orders
 http localhost:8082/orders orderId=1 productName="TV"
 http localhost:8082/orders/1
 ```
-
 
 
 # CQRS
@@ -105,8 +107,7 @@ http localhost:8082/orders/1
 ![update5](https://user-images.githubusercontent.com/11211944/168711224-288a0300-9344-4215-ae2f-70119cf47d0d.PNG)
 
 
-
-### Correlation / Compensation(Unique Key)
+# Correlation / Compensation(Unique Key)
 마이크로 서비스간의 통신에서 이벤트 메세지를 Pub/Sub 하는 방법을 통해 Compensation(보상) and Correlation(상호 연관)을 테스트
 Order 서비스에서 주문취소 이벤트를 발행하였을때 Payment 서비스에서 주문취소 이벤트를 수신하여 작업 후 결제정보를 삭제하면서 결제 취소 이벤트 발행
 
@@ -178,7 +179,8 @@ http localhost:8083/payments
 
 ![20220517_162237](https://user-images.githubusercontent.com/25494054/168753603-a3579ccb-7546-4914-86b3-86cf85490e36.png)
 
-### REQ/RES방식의 연동 - Feign Client
+
+# REQ/RES방식의 연동 - Feign Client
 주문요청은 결제 완료 후 처리되도록 동기식 호출한다. FeignClient를 사용하여 외부 시스템을 annotation 으로 호출한다.
 
 - feignClient dependency 설정 : pom.xml
@@ -206,8 +208,7 @@ public interface PaymentService {
 ![image](https://user-images.githubusercontent.com/29937411/168734842-7b887a49-7cfb-4d88-a186-8bd0f3f2ff5d.png)
 
 
-
-### Gateway
+# Gateway
 게이트웨이를 사용하여 모든 API 서버들의 엔드포인트 단일화
 
 Gateway 설정 파일 수정
@@ -307,7 +308,7 @@ kubectl apply -f kubernetes/service.yml
 ![aws_orders_get](https://user-images.githubusercontent.com/11211944/168746369-28adfe21-abc3-4eb2-ac33-c96b6e4e02a0.PNG)
 
 
-### 서킷브레이커를 사용한 테스트 및 장애차단코드 작성
+# 서킷브레이커를 사용한 테스트 및 장애차단코드 작성
 
 REQ/RES 방식에서 서킷브레이커를 통하여 장애 전파를 원천 차단
 - 주문서비스 확인
@@ -391,8 +392,7 @@ public class PaymentServiceImpl implements PaymentService{
 ![image](https://user-images.githubusercontent.com/29937411/168759002-f920e770-5cd4-4ad5-99de-2ca4502ee9e6.png)
 
 
-
-### Autoscale(HPA)
+# Autoscale(HPA)
 
 kubectl get svc 를 통하여 order 서비스 확인
 
@@ -638,7 +638,7 @@ kubectl apply -f deployment.yml
 ![apply_deployment_add](https://user-images.githubusercontent.com/11211944/168954032-11496d44-b99a-4b62-9557-c1b88fc09b08.PNG)
 
 
-### Config Map
+# Config Map / Persistence Volume / Persistence Volume Claim
 
 컨테이너를 관리하는 구성정보를 관리할 수 있는 API - ConfigMap
 
@@ -663,8 +663,6 @@ ConfigMap 사용하기
 환경변수 password 값은 mysqlinfo ConfigMap의 password라는 key의 value를 가져와라
 
 ![20220518_132522](https://user-images.githubusercontent.com/25494054/168956980-be2f396d-4294-44c1-8f5c-e49b2697be39.png)
-
-### Persistence Volume / Persistence Volume Claim
 
 PV 및 PVC 기능을 통한 mySQL 연동
 
