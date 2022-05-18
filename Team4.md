@@ -124,6 +124,7 @@ Order.java(주문취소 시 orderCanceled 이벤트 발행)
 ![20220517_132758](https://user-images.githubusercontent.com/25494054/168728936-2590a7ca-9fdd-4661-be83-56e2b533bf56.png)
 
 Payment 서비스에서 주문취소 이벤트를 받아 결제 정보를 삭제하는 로직 작성
+
 주문 ID를 통해 결제 정보를 찾는데 그 때 쓰는 Unique Key를 상호연관 ID라고 함(findById)
 
 ![20220517_133258](https://user-images.githubusercontent.com/25494054/168729559-46b8f484-b17a-4ad7-85d4-68d17ca943b3.png)
