@@ -484,7 +484,7 @@ seige 부하
 
 
 
-# self-healing
+# self-healing(livenessProbe 설정)
 - Pod의 상태가 비정상인 경우 kubelet을 통해 pod들이 재시작된다.
 ![pod_selfhealing](https://user-images.githubusercontent.com/11211944/168748704-1c02d205-326a-4c3a-8111-a6389eded4c2.PNG)
 ```
